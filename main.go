@@ -20,16 +20,12 @@ func fprintln(w io.Writer, a ...any) {
 var usernameRulesRe = regexp.MustCompile("(?i)clyde|discord|everyone|here")
 
 func sendWebhook(body DiscordWebhookPayload) bool {
+	body.AllowedMentions.Parse = []string{}
 	body.Username = usernameRulesRe.ReplaceAllString(body.Username, "[banned]")
 	if len(body.Username) > 80 {
 		body.Username = body.Username[:80]
 	}
-
-	body.AllowedMentions.Parse = []string{}
-
-	b, _ := json.Marshal(body)
-	fmt.Println("webhook json:", b)
-
+	
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(body); err != nil {
 		fmt.Println("Failed to json encode webhook body:", err)
@@ -71,8 +67,6 @@ func handleWebhook(w http.ResponseWriter, req *http.Request) {
 		fprintln(w, "Wrong signature")
 		return
 	}
-
-	fmt.Println("Got event:", string(bodyBytes))
 
 	var sponsorShipEvent SponsorShipEvent
 	if err = json.Unmarshal(bodyBytes, &sponsorShipEvent); err != nil {
