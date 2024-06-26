@@ -3,7 +3,7 @@
 Simple webhook server that allows you to receive Discord Webhook notifications
 for your GitHub sponsors.
 
-![](https://github.com/Vendicated/SponsorsWebhook/assets/45497981/616709cb-83c2-426e-b9e1-3a30bb795fb7)
+![](https://github.com/Vendicated/SponsorsWebhook/assets/45497981/623e2ba6-8f2c-4ead-b8ba-03ce75e16f4e)
 
 ## Setup
 
