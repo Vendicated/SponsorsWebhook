@@ -40,6 +40,8 @@ func sendWebhook(body DiscordWebhookPayload) bool {
 func handleWebhook(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
+		fprintln(w, "only POST is supported")
+		return
 	}
 
 	sig := req.Header.Get("HTTP_X_HUB_SIGNATURE_256")
