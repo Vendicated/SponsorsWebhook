@@ -1,0 +1,3 @@
+sponsors-webhook.example.com {
+	reverse_proxy localhost:1928
+}

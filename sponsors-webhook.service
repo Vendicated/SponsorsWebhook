@@ -1,0 +1,13 @@
+[Unit]
+Description=
+
+[Service]
+Type=exec
+Restart=always
+ExecStartPre=go build
+ExecStart=%h/SponsorsWebhook/sponsors-webhook
+WorkingDirectory=%h/SponsorsWebhook
+EnvironmentFile=%h/SponsorsWebhook/.env
+
+[Install]
+WantedBy=default.target
