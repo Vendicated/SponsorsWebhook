@@ -44,10 +44,10 @@ func handleWebhook(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	sig := req.Header.Get("HTTP_X_HUB_SIGNATURE_256")
+	sig := req.Header.Get("X-Hub-Signature-256")
 	if sig == "" {
 		w.WriteHeader(http.StatusForbidden)
-		fprintln(w, "Missing HTTP_X_HUB_SIGNATURE_256")
+		fprintln(w, "Missing X-Hub-Signature-256")
 		return
 	}
 
