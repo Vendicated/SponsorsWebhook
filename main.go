@@ -92,7 +92,7 @@ func handleWebhook(w http.ResponseWriter, req *http.Request) {
 		sponsorType = "one time"
 	}
 	oldPriceInDollar := sponsorShipEvent.Changes.Tier.From.MonthlyPriceInDollars
-	oldSponsorType := "per momth"
+	oldSponsorType := "per month"
 	if sponsorShipEvent.Sponsorship.Tier.IsOneTime {
 		oldSponsorType = "one time"
 	}
