@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"regexp"
+	"time"
 )
 
 func fprintln(w io.Writer, a ...any) {
@@ -114,12 +115,14 @@ func handleWebhook(w http.ResponseWriter, req *http.Request) {
 			sponsorType,
 		)
 	case ActionTypePendingCancellation:
+		date, _ := time.Parse(time.RFC3339, sponsorShipEvent.EffectiveDate)
 		message.Content = fmt.Sprintf(
-			"%s scheduled a cancellation for their %d$ %s sponsorship at %s",
+			"%s scheduled a cancellation for their %d$ %s sponsorship. Will take effect <t:%d> (<t:%d:R>)",
 			sponsorUserLink,
 			priceInDollar,
 			sponsorType,
-			sponsorShipEvent.EffectiveDate,
+			date.Unix(),
+			date.Unix(),
 		)
 	case ActionTypeTierChanged:
 		message.Content = fmt.Sprintf(
@@ -131,14 +134,16 @@ func handleWebhook(w http.ResponseWriter, req *http.Request) {
 			sponsorType,
 		)
 	case ActionTypePendingTierChange:
+		date, _ := time.Parse(time.RFC3339, sponsorShipEvent.EffectiveDate)
 		message.Content = fmt.Sprintf(
-			"%s scheduled a change of their tier from %d$ %s to %d$ %s at %s",
+			"%s scheduled a change of their tier from %d$ %s to %d$ %s. Will take effect at <t:%d> (<t:%d:R>)",
 			sponsorUserLink,
 			oldPriceInDollar,
 			oldSponsorType,
 			priceInDollar,
 			sponsorType,
-			sponsorShipEvent.EffectiveDate,
+			date.Unix(),
+			date.Unix(),
 		)
 	default:
 		w.WriteHeader(200)
