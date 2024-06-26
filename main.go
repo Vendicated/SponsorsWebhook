@@ -106,7 +106,7 @@ func handleWebhook(w http.ResponseWriter, req *http.Request) {
 		)
 	case ActionTypePendingCancellation:
 		message.Content = fmt.Sprintf(
-			"%s schedulled a cancellation for their %d$ %s sponsorship at %s",
+			"%s scheduled a cancellation for their %d$ %s sponsorship at %s",
 			sponsorUserLink,
 			priceInDollar,
 			sponsorType,
@@ -123,7 +123,7 @@ func handleWebhook(w http.ResponseWriter, req *http.Request) {
 		)
 	case ActionTypePendingTierChange:
 		message.Content = fmt.Sprintf(
-			"%s schedulled a change of their tier from %d$ %s to %d$ %s at %s",
+			"%s scheduled a change of their tier from %d$ %s to %d$ %s at %s",
 			sponsorUserLink,
 			oldPriceInDollar,
 			oldSponsorType,
