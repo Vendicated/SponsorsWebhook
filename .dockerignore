@@ -1,0 +1,7 @@
+# Ignore everything by default, then whitelist what the build actually needs.
+*
+!go.mod
+!go.sum
+!*.go
+!static
+!static/**

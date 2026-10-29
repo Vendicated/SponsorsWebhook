@@ -21,3 +21,27 @@ for your GitHub sponsors.
 8. Set Content type to application/json
 9. Paste your secret (from your .env) file in the Secret box
 10. Hit save and you're all done!
+
+## Docker
+
+Images are built and published to the GitHub Container Registry on every push to
+`main` and on `v*` tags:
+
+```bash
+docker run -d --name sponsors-webhook \
+    -p 1928:1928 \
+    -e SPONSORS_WEBHOOK_URL='https://discord.com/api/webhooks/...' \
+    -e SPONSORS_SECRET='your_secret' \
+    ghcr.io/vendicated/sponsorswebhook:latest
+```
+
+`SPONSORS_WEBHOOK_URL` and `SPONSORS_SECRET` are required; the container exits if
+either is missing. The server listens on port `1928` by default, which can be
+changed with `SPONSORS_PORT` (publish the matching port if you do). Point your
+reverse proxy (see `Caddyfile`) at the published port as usual.
+
+To build the image yourself:
+
+```bash
+docker build -t sponsors-webhook .
+```
