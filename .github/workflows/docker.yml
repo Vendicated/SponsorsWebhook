@@ -6,14 +6,20 @@ on:
         tags: ['v*']
     pull_request:
         branches: ['main']
+    workflow_dispatch:
 
 env:
     REGISTRY: ghcr.io
     IMAGE_NAME: ${{ github.repository }}
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
 jobs:
     build:
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         permissions:
             contents: read
             packages: write
@@ -23,6 +29,7 @@ jobs:
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
             - name: Log in to Container Registry
+              if: github.event_name != 'pull_request'
               uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
               with:
                   registry: ${{ env.REGISTRY }}

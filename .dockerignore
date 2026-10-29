@@ -1,0 +1,11 @@
+.env
+.env.*
+.git
+.gitignore
+.github
+*.md
+LICENSE
+Dockerfile
+Caddyfile
+sponsors-webhook
+sponsors-webhook.service

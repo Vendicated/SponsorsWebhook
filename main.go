@@ -2,14 +2,19 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"os/signal"
 	"regexp"
+	"syscall"
 	"time"
 )
 
@@ -164,9 +169,38 @@ func verifySignature(message []byte, messageMAC string) bool {
 }
 
 func main() {
-	http.Handle("/", http.FileServer(http.Dir("./static")))
-	http.HandleFunc("/webhook", handleWebhook)
+	mux := http.NewServeMux()
+	mux.Handle("/", http.FileServer(http.Dir("./static")))
+	mux.HandleFunc("/webhook", handleWebhook)
 
-	fmt.Println("Listening on port", Port)
-	panic(http.ListenAndServe(":"+Port, nil))
+	srv := &http.Server{
+		Addr:    ":" + Port,
+		Handler: mux,
+	}
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	errCh := make(chan error, 1)
+	go func() {
+		fmt.Println("Listening on port", Port)
+		errCh <- srv.ListenAndServe()
+	}()
+
+	select {
+	case err := <-errCh:
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
+			fmt.Println("Server error:", err)
+			os.Exit(1)
+		}
+	case <-ctx.Done():
+		fmt.Println("Shutting down")
+
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		if err := srv.Shutdown(shutdownCtx); err != nil {
+			fmt.Println("Failed to shut down gracefully:", err)
+		}
+	}
 }
