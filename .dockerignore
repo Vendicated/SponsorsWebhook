@@ -1,11 +1,8 @@
-.env
-.env.*
-.git
-.gitignore
-.github
-*.md
-LICENSE
-Dockerfile
-Caddyfile
-sponsors-webhook
-sponsors-webhook.service
+# Ignore everything by default, then whitelist what the build actually needs.
+*
+!Dockerfile
+!go.mod
+!go.sum
+!*.go
+!static
+!static/**
